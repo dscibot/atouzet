@@ -135,7 +135,7 @@ const ServiceBox = React.memo(({ service, isSmallScreen }) => (
 const SectionAccueil = ({ accueilRef }) => {
   const { width } = useWindowDimensions();
   const isSmallScreen = width < 1024;
-  const contentWidth = isSmallScreen ? width * 0.9 : 500;
+  const contentWidth = isSmallScreen ? "100%" : "100%";
 
   return (
     <View ref={accueilRef} style={styles.section}>
