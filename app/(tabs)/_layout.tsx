@@ -1,33 +1,30 @@
-import { Stack } from 'expo-router';
-import { useFonts } from 'expo-font';
-import { useEffect } from 'react';
+import { Stack } from "expo-router";
+import { useFonts } from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
+import { useCallback } from "react";
 
-export default function Layout() {
-  const [fontsLoaded] = useFonts({
-    BrownSugar: require('../../assets/fonts/BrownSugar.ttf'),
-    GlassAntica: require('../../assets/fonts/GlassAntiqua-Regular.ttf'),
+SplashScreen.preventAutoHideAsync();
+
+export default function RootLayout() {
+  const [fontsLoaded, fontError] = useFonts({
+    BrownSugar: require("../../assets/fonts/BrownSugar.ttf"),
+    GlassAntica: require("../../assets/fonts/GlassAntiqua-Regular.ttf"),
   });
 
-  useEffect(() => {
-    if (!fontsLoaded) {
-      console.log('Fonts loading...');
-    } else {
-      console.log('Fonts loaded successfully');
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded || fontError) {
+      await SplashScreen.hideAsync();
     }
-  }, [fontsLoaded]);
+  }, [fontsLoaded, fontError]);
 
-  if (!fontsLoaded) {
-    return null; // Ou un écran de chargement si vous préférez
+  if (!fontsLoaded && !fontError) {
+    return null; // Garde l’écran de démarrage jusqu’à ce que les polices soient prêtes
   }
 
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false, // Masquer l'en-tête par défaut
-      }}
-    >
-      <Stack.Screen name="index" options={{ title: 'Home' }} />
-      <Stack.Screen name="privacy-policy" options={{ title: 'Politique de Confidentialité' }} />
+    <Stack screenOptions={{ headerShown: false }} onLayout={onLayoutRootView}>
+      <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="privacy-policy" />
     </Stack>
   );
 }
