@@ -10,6 +10,7 @@ import {
   FlatList,
   Linking,
   CheckBox,
+  Platform,
 } from "react-native";
 import { useWindowDimensions } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -18,22 +19,24 @@ import Feather from "@expo/vector-icons/Feather";
 import Entypo from "@expo/vector-icons/Entypo";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { useRouter, useFocusEffect } from "expo-router";
-import WebView from "react-native-webview";
 
-// Cronitor Tracking HTML
-const cronitorScript = `
-  <!DOCTYPE html>
-  <html>
-  <head>
-    <script async src="https://rum.cronitor.io/script.js"></script>
-    <script>
-      window.cronitor = window.cronitor || function() { (window.cronitor.q = window.cronitor.q || []).push(arguments); };
-      cronitor('config', { clientKey: '9f0914b4dc4f9b6eda76b27646810487' });
-    </script>
-  </head>
-  <body></body>
-  </html>
-`;
+// Hook to initialize Cronitor only on web
+const useCronitorWeb = (consent) => {
+  useEffect(() => {
+    if (Platform.OS === "web" && consent) {
+      import("@cronitorio/cronitor-rum")
+        .then((Cronitor) => {
+          Cronitor.load("9f0914b4dc4f9b6eda76b27646810487", {
+            debug: false,
+            trackMode: "history",
+          });
+        })
+        .catch((error) => {
+          console.error("Erreur lors du chargement de Cronitor RUM :", error);
+        });
+    }
+  }, [consent]);
+};
 
 // CookiePopup Component
 const CookiePopup = ({ visible, onAccept, onDecline, onNavigate, onClose }) => {
@@ -44,7 +47,6 @@ const CookiePopup = ({ visible, onAccept, onDecline, onNavigate, onClose }) => {
     onClose();
     onNavigate.push("/privacy-policy");
   };
-
 
   return (
     <Modal animationType="fade" transparent={true} visible={visible} onRequestClose={() => {}}>
@@ -178,14 +180,14 @@ const SectionAccueil = ({ accueilRef }) => {
         <View style={[styles.textContainer, { width: contentWidth }]}>
           <View style={styles.descriptionBox}>
             <Text style={[styles.description, isSmallScreen && styles.descriptionMobile]}>
-            Bonjour, je suis Amélie, assistante administrative indépendante, spécialisée auprès des professions libérales, notamment dans le domaine juridique.
+              Bonjour, je suis Amélie, assistante administrative indépendante, spécialisée auprès des professions libérales, notamment dans le domaine juridique.
             </Text>
             <Text style={[styles.description, isSmallScreen && styles.descriptionMobile]}>
-            Confiez-moi votre administratif, concentrez-vous sur l’essentiel : votre cœur de métier.
-            Rigoureuse, réactive et discrète, je vous fais gagner un temps précieux et vous libère des tâches chronophages.
+              Confiez-moi votre administratif, concentrez-vous sur l’essentiel : votre cœur de métier.
+              Rigoureuse, réactive et discrète, je vous fais gagner un temps précieux et vous libère des tâches chronophages.
             </Text>
             <Text style={[styles.description, isSmallScreen && styles.descriptionMobile]}>
-            Bien que je sois particulièrement habituée à accompagner des avocats, notaires et autres professionnels du droit, je collabore également avec d’autres entrepreneurs, artisans et indépendants qui souhaitent déléguer leur administratif en toute confiance.
+              Bien que je sois particulièrement habituée à accompagner des avocats, notaires et autres professionnels du droit, je collabore également avec d’autres entrepreneurs, artisans et indépendants qui souhaitent déléguer leur administratif en toute confiance.
             </Text>
           </View>
         </View>
@@ -208,7 +210,7 @@ const SectionServices = ({ servicesRef }) => {
           renderItem={({ item }) => <ServiceBox service={item} isSmallScreen={isSmallScreen} />}
           keyExtractor={(item, index) => index.toString()}
           numColumns={isSmallScreen ? 1 : 2}
-          key={isSmallScreen ? "1-col" : "2-col"}
+          key={isSmallScreen ? "1-col " : "2-col"}
           contentContainerStyle={styles.servicesContainer}
           columnWrapperStyle={isSmallScreen ? null : styles.columnWrapper}
         />
@@ -418,7 +420,7 @@ const Footer = () => {
             <Text style={[styles.footerSubtext, styles.footerTextLink]}>Politique de confidentialité</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={devby}>
-          <Text style={[styles.footerSubtext, styles.footerTextLink]}>App Developed by DSCMaker</Text>
+            <Text style={[styles.footerSubtext, styles.footerTextLink]}>App Developed by DSCMaker</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -440,12 +442,15 @@ export default function Index() {
   const [showCookiePopup, setShowCookiePopup] = useState(false);
   const router = useRouter();
 
+  useCronitorWeb(consent);
+
   useFocusEffect(
     useCallback(() => {
       const checkCookieConsent = async () => {
         try {
-          const consent = await AsyncStorage.getItem("cookieConsent");
-          setShowCookiePopup(consent === null);
+          const consentValue = await AsyncStorage.getItem("cookieConsent");
+          setShowCookiePopup(consentValue === null);
+          setConsent(consentValue === "accepted");
         } catch (error) {
           console.error("Erreur lors de la vérification des cookies :", error);
           setShowCookiePopup(true);
@@ -456,13 +461,23 @@ export default function Index() {
   );
 
   const handleAcceptCookies = async () => {
-    await AsyncStorage.setItem("cookieConsent", "accepted");
-    setShowCookiePopup(false);
+    try {
+      await AsyncStorage.setItem("cookieConsent", "accepted");
+      setConsent(true);
+      setShowCookiePopup(false);
+    } catch (error) {
+      console.error("Erreur lors de l’acceptation des cookies :", error);
+    }
   };
 
   const handleDeclineCookies = async () => {
-    await AsyncStorage.setItem("cookieConsent", "declined");
-    setShowCookiePopup(false);
+    try {
+      await AsyncStorage.setItem("cookieConsent", "declined");
+      setConsent(false);
+      setShowCookiePopup(false);
+    } catch (error) {
+      console.error("Erreur lors du refus des cookies :", error);
+    }
   };
 
   const scrollToSection = useCallback(
@@ -526,15 +541,6 @@ export default function Index() {
           <Footer />
         </ScrollView>
         <Navbar onNavigate={scrollToSection} activeSection={activeSection} />
-        {/* Cronitor Tracking WebView - Only load if cookies are accepted */}
-        {consent && (
-          <WebView
-            source={{ html: cronitorScript }}
-            style={styles.cronitorWebView}
-            javaScriptEnabled={true}
-            originWhitelist={["*"]}
-          />
-        )}
       </View>
       <CookiePopup
         visible={showCookiePopup}
@@ -547,7 +553,7 @@ export default function Index() {
   );
 }
 
-// Styles
+// Styles (unchanged)
 const styles = StyleSheet.create({
   outerContainer: { flex: 1, backgroundColor: "#fff2ed", alignItems: "center" },
   innerContainer: { flex: 1, width: "100%", paddingTop: 20, paddingBottom: 0 },
@@ -569,11 +575,6 @@ const styles = StyleSheet.create({
   serviceIconLeft: { position: "absolute", top: 10, left: 10 },
   serviceTitle: { fontSize: 25, color: "#4F4F4F", fontFamily: "GlassAntica", textAlign: "center", marginBottom: 10 },
   serviceDescriptionContainer: { paddingHorizontal: 10 },
-  cronitorWebView: {
-    width: 0,
-    height: 0,
-    opacity: 0,
-  },
   serviceDescriptionRow: {
     flexDirection: "row",
     alignItems: "flex-start",
