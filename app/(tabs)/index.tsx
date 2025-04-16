@@ -89,28 +89,28 @@ const services = [
   {
     title: "FACTURES",
     description:
-      "Gagnez du temps et assurez une gestion fluide de votre facturation ! En tant qu’assistante administrative indépendante, je vous accompagne dans la rédaction et le suivi de vos devis et factures pour vous permettre de vous concentrer sur votre cœur de métier.\n✅ Émission de vos devis et factures: Création et mise en page professionnelle selon vos exigences.\n✅ Suivi des paiements: Relances des clients en cas de retard pour optimiser votre trésorerie.",
+      "Gagnez du temps et assurez une gestion fluide de votre facturation ! En tant qu’assistante administrative indépendante, je vous accompagne dans la rédaction et le suivi de vos devis et factures pour vous permettre de vous concentrer sur votre cœur de métier.\n[CHECK] Émission de vos devis et factures: Création et mise en page professionnelle selon vos exigences.\n[CHECK] Suivi des paiements: Relances des clients en cas de retard pour optimiser votre trésorerie.",
     color: "#c8a1cf",
     icon: "file-invoice-dollar",
   },
   {
     title: "TRANSCRIPTION",
     description:
-      "Gagnez du temps et assurez des documents clairs et professionnels ! Je transforme vos dictées en textes parfaitement rédigés et mis en forme, prêts à être utilisés.\n✅ Transcription fidèle et précise : Retranscription de vos dictées audio avec orthographe et syntaxe soignées.\n✅ Mise en page professionnelle : Adaptation selon vos besoins (courriers, rapports, actes, conclusions…).\n✅ Gain de temps assuré : Vous dictez, je rédige et vous livrez des documents impeccables.",
+      "Gagnez du temps et assurez des documents clairs et professionnels ! Je transforme vos dictées<$0D>en textes parfaitement rédigés et mis en forme, prêts à être utilisés.\n[CHECK] Transcription fidèle et précise : Retranscription de vos dictées audio avec orthographe et syntaxe soignées.\n[CHECK] Mise en page professionnelle : Adaptation selon vos besoins (courriers, rapports, actes, conclusions…).\n[CHECK] Gain de temps assuré : Vous dictez, je rédige et vous livrez des documents impeccables.",
     color: "#c8a1cf",
     icon: "file-contract",
   },
   {
     title: "GESTION MAILS",
     description:
-      "Libérez-vous de la gestion chronophage de vos e-mails et gagnez en efficacité ! Je vous aide à trier, organiser et répondre à vos messages pour que vous puissiez vous concentrer sur l’essentiel.\n✅ Tri et classement des e-mails : Priorisation des messages importants et suppression des indésirables.\n✅ Réponses et suivi des demandes : Rédaction de réponses selon vos consignes et gestion des urgences.\n✅ Organisation et archivage : Mise en place de dossiers et filtres pour une boîte mail optimisée.\n✅ Veille et relances : Suivi des échanges clients, fournisseurs ou partenaires pour éviter les oublis.",
+      "Libérez-vous de la gestion chronophage de vos e-mails et gagnez en efficacité ! Je vous aide à trier, organiser et répondre à vos messages pour que vous puissiez vous concentrer sur l’essentiel.\n[CHECK] Tri et classement des e-mails : Priorisation des messages importants et suppression des indésirables.\n[CHECK] Réponses et suivi des demandes : Rédaction de réponses selon vos consignes et gestion des urgences.\n[CHECK] Organisation et archivage : Mise en place de dossiers et filtres pour une boîte mail optimisée.\n[CHECK] Veille et relances : Suivi des échanges clients, fournisseurs ou partenaires pour éviter les oublis.",
     color: "#c8a1cf",
     icon: "envelope",
   },
   {
     title: "CONFIDENTIALITÉ ET RIGUEUR",
     description:
-      "Je traite vos documents avec la plus grande discrétion et un haut niveau d’exigence.\n✅ Confidentialité garantie : Toutes vos données sont traitées en toute sécurité, dans le respect du secret professionnel et des réglementations en vigueur.\n✅ Rigueur et précision : Chaque document est rédigé avec soin et exactitude pour vous assurer un travail fiable et de qualité.\n✅ Engagement professionnel : Une collaboration fondée sur la confiance, avec des processus clairs et une gestion efficace de vos dossiers.",
+      "Je traite vos documents avec la plus grande discrétion et un haut niveau d’exigence.\n[CHECK] Confidentialité garantie : Toutes vos données sont traitées en toute sécurité, dans le respect du secret professionnel et des réglementations en vigueur.\n[CHECK] Rigueur et précision : Chaque document est rédigé avec soin et exactitude pour vous assurer un travail fiable et de qualité.\n[CHECK] Engagement professionnel : Une collaboration fondée sur la confiance, avec des processus clairs et une gestion efficace de vos dossiers.",
     color: "#c8a1cf",
     icon: "lock",
   },
@@ -122,16 +122,31 @@ const ServiceBox = React.memo(({ service, isSmallScreen }) => (
     <FontAwesome5 name={service.icon} size={30} color={service.color} style={styles.serviceIconLeft} />
     <Text style={styles.serviceTitle}>{service.title}</Text>
     <View style={styles.serviceDescriptionContainer}>
-      {service.description.split("\n").map((line, index) => (
-        <Text key={index} style={styles.serviceDescription}>
-          {line.trim()}
-        </Text>
-      ))}
+      {service.description.split("\n").map((line, index) => {
+        const isBulletPoint = line.startsWith("[CHECK]");
+        const cleanLine = isBulletPoint ? line.replace("[CHECK]", "").trim() : line.trim();
+
+        if (!cleanLine) return null;
+
+        return (
+          <View key={index} style={styles.serviceDescriptionRow}>
+            {isBulletPoint && (
+              <FontAwesome5
+                name="check-circle"
+                size={18}
+                color={service.color}
+                style={styles.serviceDescriptionIcon}
+              />
+            )}
+            <Text style={styles.serviceDescription}>{cleanLine}</Text>
+          </View>
+        );
+      })}
     </View>
   </View>
 ));
 
-// SectionAccueil Component (Corrigée)
+// SectionAccueil Component
 const SectionAccueil = ({ accueilRef }) => {
   const { width } = useWindowDimensions();
   const isSmallScreen = width < 1024;
@@ -200,7 +215,9 @@ const SectionTarifs = ({ tariffsRef }) => {
       <Text style={styles.tarifHeader}>DES TARIFS ADAPTÉS À VOS BESOINS</Text>
       <Text style={[styles.tarifDescription, isSmallScreen && styles.tarifDescriptionMobile]}>
         Parce que chaque professionnel a des exigences spécifiques, je vous propose une tarification flexible : à l'acte
-        pour des besoins ponctuels ou en forfait pour un accompagnement régulier.
+        pour des besoins ponctuels ou en forfait pour un accompagnement régulier. Les forfaits proposés sont les plus
+        courants, si vous avez des besoins spécifiques, n'hésitez pas à me contacter afin d'envisager des forfaits
+        personnalisés, adaptés à votre activité et à votre charge de travail
       </Text>
       <View style={[styles.tarifContainer, isSmallScreen && styles.tarifColumn]}>
         <View style={[styles.tarifBox, isSmallScreen && styles.tarifBoxFullWidth]}>
@@ -512,7 +529,7 @@ const styles = StyleSheet.create({
   separator: { height: 2, width: "80%", backgroundColor: "#704F57", marginVertical: 20, alignSelf: "center" },
   content: { width: "90%", maxWidth: 1200, paddingVertical: 20, alignItems: "center" },
   textContainer: { paddingHorizontal: 20 },
-  descriptionBox: { backgroundColor: "#FFD1D1", padding: 20, borderRadius: 15 },
+  descriptionBox: { backgroundColor: "#f4dddb", padding: 20, borderRadius: 15 },
   description: { fontSize: 25, fontFamily: "GlassAntica", color: "#4F4F4F", textAlign: "center", marginVertical: 5 },
   descriptionMobile: { fontSize: 20 },
   servicesHeader: { fontSize: 42, fontFamily: "BrownSugar", color: "#704F57", marginVertical: 20, textAlign: "center" },
@@ -523,9 +540,32 @@ const styles = StyleSheet.create({
   serviceIconLeft: { position: "absolute", top: 10, left: 10 },
   serviceTitle: { fontSize: 25, color: "#4F4F4F", fontFamily: "GlassAntica", textAlign: "center", marginBottom: 10 },
   serviceDescriptionContainer: { paddingHorizontal: 10 },
-  serviceDescription: { fontSize: 20, fontFamily: "GlassAntica", color: "#4F4F4F", textAlign: "left", marginVertical: 2 },
+  serviceDescriptionRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginVertical: 2,
+  },
+  serviceDescriptionIcon: {
+    marginRight: 8,
+    marginTop: 4,
+  },
+  serviceDescription: {
+    fontSize: 20,
+    fontFamily: "GlassAntica",
+    color: "#4F4F4F",
+    textAlign: "left",
+    flex: 1,
+  },
   tarifHeader: { fontSize: 42, fontFamily: "BrownSugar", color: "#704F57", marginTop: 30, textAlign: "center" },
-  tarifDescription: { fontSize: 25, fontFamily: "GlassAntica", color: "#4F4F4F", textAlign: "center", marginBottom: 20, paddingHorizontal: 20, maxWidth: 800 },
+  tarifDescription: {
+    fontSize: 25,
+    fontFamily: "GlassAntica",
+    color: "#4F4F4F",
+    textAlign: "center",
+    marginBottom: 20,
+    paddingHorizontal: 20,
+    maxWidth: 800,
+  },
   tarifDescriptionMobile: { fontSize: 18, paddingHorizontal: 15 },
   tarifContainer: { flexDirection: "row", justifyContent: "space-around", width: "90%" },
   tarifColumn: { flexDirection: "column", alignItems: "center" },
@@ -533,16 +573,49 @@ const styles = StyleSheet.create({
   tarifBoxFullWidth: { width: "90%", marginBottom: 15 },
   tarifTitle: { fontSize: 25, fontFamily: "BrownSugar", color: "white" },
   tarifText: { fontSize: 21, fontFamily: "GlassAntica", color: "white", marginVertical: 5, textAlign: "center" },
-  contactContainer: { backgroundColor: "#FFD1D1", padding: 20, borderRadius: 15, width: "90%", maxWidth: 600, marginTop: 40 },
+  contactContainer: {
+    backgroundColor: "#f4dddb",
+    padding: 20,
+    borderRadius: 15,
+    width: "90%",
+    maxWidth: 600,
+    marginTop: 40,
+  },
   contactHeader: { fontSize: 42, fontFamily: "BrownSugar", color: "#704F57", textAlign: "center" },
-  contactDescription: { fontSize: 20, fontFamily: "GlassAntica", color: "#4F4F4F", textAlign: "center", marginBottom: 20 },
-  input: { backgroundColor: "white", padding: 10, fontFamily: "GlassAntica", marginVertical: 10, borderRadius: 10, fontSize: 18 },
+  contactDescription: {
+    fontSize: 20,
+    fontFamily: "GlassAntica",
+    color: "#4F4F4F",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  input: {
+    backgroundColor: "white",
+    padding: 10,
+    fontFamily: "GlassAntica",
+    marginVertical: 10,
+    borderRadius: 10,
+    fontSize: 18,
+  },
   checkboxContainer: { flexDirection: "row", alignItems: "center", marginTop: 10 },
   checkboxLabel: { fontSize: 20, fontFamily: "GlassAntica", color: "#4F4F4F" },
-  submitButton: { backgroundColor: "#704F57", paddingVertical: 12, paddingHorizontal: 25, borderRadius: 20, alignItems: "center", marginTop: 10 },
+  submitButton: {
+    backgroundColor: "#704F57",
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    borderRadius: 20,
+    alignItems: "center",
+    marginTop: 10,
+  },
   submitButtonText: { color: "white", fontSize: 18, fontFamily: "GlassAntica" },
   disabledButton: { backgroundColor: "#B0B0B0", opacity: 0.7 },
-  statusMessage: { marginTop: 10, textAlign: "center", fontSize: 16, fontFamily: "GlassAntica", color: "#4F4F4F" },
+  statusMessage: {
+    marginTop: 10,
+    textAlign: "center",
+    fontSize: 16,
+    fontFamily: "GlassAntica",
+    color: "#4F4F4F",
+  },
   success: { color: "green" },
   error: { color: "red" },
   footer: { width: "100%", paddingVertical: 100, alignItems: "center", marginTop: 50, backgroundColor: "#2E1E2E" },
@@ -574,7 +647,14 @@ const styles = StyleSheet.create({
   navText: { color: "white", fontSize: 20, fontFamily: "GlassAntica" },
   navTextActive: { color: "white" },
   modalOverlay: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(0, 0, 0, 0.5)" },
-  cookiePopup: { backgroundColor: "#FFD1D1", padding: 20, borderRadius: 15, width: "80%", maxWidth: 500, alignItems: "center" },
+  cookiePopup: {
+    backgroundColor: "#f4dddb",
+    padding: 20,
+    borderRadius: 15,
+    width: "80%",
+    maxWidth: 500,
+    alignItems: "center",
+  },
   cookiePopupMobile: { width: "90%" },
   cookieHeader: { fontSize: 24, fontFamily: "BrownSugar", color: "#704F57", textAlign: "center", marginBottom: 10 },
   cookieText: { fontSize: 16, fontFamily: "GlassAntica", color: "#4F4F4F", textAlign: "center", marginBottom: 20 },

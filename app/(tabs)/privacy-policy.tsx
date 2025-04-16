@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
   privacyWrapper: {
     width: '90%',
     maxWidth: 900,
-    backgroundColor: '#FFD1D1',
+    backgroundColor: '#f4dddb',
     padding: 20,
     borderRadius: 15,
     marginBottom: 20,
