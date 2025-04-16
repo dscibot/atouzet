@@ -18,6 +18,22 @@ import Feather from "@expo/vector-icons/Feather";
 import Entypo from "@expo/vector-icons/Entypo";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { useRouter, useFocusEffect } from "expo-router";
+import WebView from "react-native-webview";
+
+// Cronitor Tracking HTML
+const cronitorScript = `
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <script async src="https://rum.cronitor.io/script.js"></script>
+    <script>
+      window.cronitor = window.cronitor || function() { (window.cronitor.q = window.cronitor.q || []).push(arguments); };
+      cronitor('config', { clientKey: '9f0914b4dc4f9b6eda76b27646810487' });
+    </script>
+  </head>
+  <body></body>
+  </html>
+`;
 
 // CookiePopup Component
 const CookiePopup = ({ visible, onAccept, onDecline, onNavigate, onClose }) => {
@@ -28,6 +44,7 @@ const CookiePopup = ({ visible, onAccept, onDecline, onNavigate, onClose }) => {
     onClose();
     onNavigate.push("/privacy-policy");
   };
+
 
   return (
     <Modal animationType="fade" transparent={true} visible={visible} onRequestClose={() => {}}>
@@ -96,7 +113,7 @@ const services = [
   {
     title: "TRANSCRIPTION",
     description:
-      "Gagnez du temps et assurez des documents clairs et professionnels ! Je transforme vos dictées<$0D>en textes parfaitement rédigés et mis en forme, prêts à être utilisés.\n[CHECK] Transcription fidèle et précise : Retranscription de vos dictées audio avec orthographe et syntaxe soignées.\n[CHECK] Mise en page professionnelle : Adaptation selon vos besoins (courriers, rapports, actes, conclusions…).\n[CHECK] Gain de temps assuré : Vous dictez, je rédige et vous livrez des documents impeccables.",
+      "Gagnez du temps et assurez des documents clairs et professionnels ! Je transforme vos dictées en textes parfaitement rédigés et mis en forme, prêts à être utilisés.\n[CHECK] Transcription fidèle et précise : Retranscription de vos dictées audio avec orthographe et syntaxe soignées.\n[CHECK] Mise en page professionnelle : Adaptation selon vos besoins (courriers, rapports, actes, conclusions…).\n[CHECK] Gain de temps assuré : Vous dictez, je rédige et vous livrez des documents impeccables.",
     color: "#c8a1cf",
     icon: "file-contract",
   },
@@ -161,19 +178,14 @@ const SectionAccueil = ({ accueilRef }) => {
         <View style={[styles.textContainer, { width: contentWidth }]}>
           <View style={styles.descriptionBox}>
             <Text style={[styles.description, isSmallScreen && styles.descriptionMobile]}>
-              Bonjour, je suis Amélie, assistante administrative indépendante.
+            Bonjour, je suis Amélie, assistante administrative indépendante, spécialisée auprès des professions libérales, notamment dans le domaine juridique.
             </Text>
             <Text style={[styles.description, isSmallScreen && styles.descriptionMobile]}>
-              Passionnée par l’univers administratif, je mets mon expertise au service des entrepreneurs pour qu’ils
-              puissent se concentrer sur l’essence de leur métier.
+            Confiez-moi votre administratif, concentrez-vous sur l’essentiel : votre cœur de métier.
+            Rigoureuse, réactive et discrète, je vous fais gagner un temps précieux et vous libère des tâches chronophages.
             </Text>
             <Text style={[styles.description, isSmallScreen && styles.descriptionMobile]}>
-              Là où la paperasse se transforme en véritable casse-tête chronophage, j’y trouve un terrain de jeu
-              stimulant.
-            </Text>
-            <Text style={[styles.description, isSmallScreen && styles.descriptionMobile]}>
-              Mon objectif est de vous libérer des contraintes administratives afin que vous puissiez vous concentrer
-              pleinement sur votre cœur de métier.
+            Bien que je sois particulièrement habituée à accompagner des avocats, notaires et autres professionnels du droit, je collabore également avec d’autres entrepreneurs, artisans et indépendants qui souhaitent déléguer leur administratif en toute confiance.
             </Text>
           </View>
         </View>
@@ -196,6 +208,7 @@ const SectionServices = ({ servicesRef }) => {
           renderItem={({ item }) => <ServiceBox service={item} isSmallScreen={isSmallScreen} />}
           keyExtractor={(item, index) => index.toString()}
           numColumns={isSmallScreen ? 1 : 2}
+          key={isSmallScreen ? "1-col" : "2-col"}
           contentContainerStyle={styles.servicesContainer}
           columnWrapperStyle={isSmallScreen ? null : styles.columnWrapper}
         />
@@ -382,6 +395,10 @@ const Footer = () => {
     router.push("/privacy-policy");
   };
 
+  const devby = () => {
+    router.push("https://dscmaker.shop");
+  };
+
   return (
     <View style={styles.footer}>
       <View style={styles.footerContainer}>
@@ -399,6 +416,9 @@ const Footer = () => {
         <View style={[styles.footerBox, { flex: 1, justifyContent: "center", alignItems: "center" }]}>
           <TouchableOpacity onPress={handlePrivacyPolicyPress}>
             <Text style={[styles.footerSubtext, styles.footerTextLink]}>Politique de confidentialité</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={devby}>
+          <Text style={[styles.footerSubtext, styles.footerTextLink]}>App Developed by DSCMaker</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -506,6 +526,15 @@ export default function Index() {
           <Footer />
         </ScrollView>
         <Navbar onNavigate={scrollToSection} activeSection={activeSection} />
+        {/* Cronitor Tracking WebView - Only load if cookies are accepted */}
+        {consent && (
+          <WebView
+            source={{ html: cronitorScript }}
+            style={styles.cronitorWebView}
+            javaScriptEnabled={true}
+            originWhitelist={["*"]}
+          />
+        )}
       </View>
       <CookiePopup
         visible={showCookiePopup}
@@ -540,6 +569,11 @@ const styles = StyleSheet.create({
   serviceIconLeft: { position: "absolute", top: 10, left: 10 },
   serviceTitle: { fontSize: 25, color: "#4F4F4F", fontFamily: "GlassAntica", textAlign: "center", marginBottom: 10 },
   serviceDescriptionContainer: { paddingHorizontal: 10 },
+  cronitorWebView: {
+    width: 0,
+    height: 0,
+    opacity: 0,
+  },
   serviceDescriptionRow: {
     flexDirection: "row",
     alignItems: "flex-start",
