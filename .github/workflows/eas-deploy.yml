@@ -1,0 +1,30 @@
+name: Deploy to EAS Hosting
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-web:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install EAS CLI
+        run: npm install -g eas-cli
+
+      - name: EAS Login
+        run: eas whoami || eas login --token ${{ secrets.EXPO_TOKEN }}
+
+      - name: Build and deploy to EAS Hosting
+        run: eas deploy --platform web
