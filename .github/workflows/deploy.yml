@@ -1,31 +1,30 @@
-name: Expo Deploy
+name: Deploy Expo Web to GitHub Pages
 
 on:
   push:
     branches:
-      - main  # Déploie uniquement quand on push sur main
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 🔄 Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: ⚙️ Set up Node.js
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - name: 📦 Install dependencies
+      - name: Install dependencies
         run: npm install
 
-      - name: 🚀 Install Expo CLI
-        run: npm install -g expo-cli
+      - name: Export static web build
+        run: npx expo export:web
 
-      - name: 🔐 Login to Expo
-        run: expo login --token ${{ secrets.EXPO_TOKEN }}
-
-      - name: 📤 EAS Update
-        run: npx eas update --branch main --non-interactive
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist  
