@@ -1,10 +1,11 @@
 {
     "cli": {
-      "version": ">=3.0.0"
+      "version": ">= 3.0.0"
     },
     "build": {
-      "preview": {
-        "extends": "web"
+      "web": {
+        "buildCommand": "expo export:web",
+        "dist": "dist"
       }
     }
   }
