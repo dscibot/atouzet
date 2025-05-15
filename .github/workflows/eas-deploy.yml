@@ -8,6 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
 
@@ -19,6 +20,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Install EAS CLI
+        run: npm install -g eas-cli
+
       - name: Login to EAS
         run: eas whoami || eas login --token ${{ secrets.EXPO_TOKEN }}
 
@@ -26,8 +30,5 @@ jobs:
         run: eas deploy --profile preview
         env:
           EAS_ACCESS_TOKEN: ${{ secrets.EXPO_TOKEN }}
-
-
-     
 
 
