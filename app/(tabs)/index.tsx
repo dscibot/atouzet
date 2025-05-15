@@ -19,6 +19,9 @@ import Feather from "@expo/vector-icons/Feather";
 import Entypo from "@expo/vector-icons/Entypo";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { useRouter, useFocusEffect } from "expo-router";
+import LogRocket from 'logrocket';
+
+LogRocket.init('ktieii/atouzet');
 
 // Hook to initialize Cronitor only on web
 const useCronitorWeb = (consent) => {

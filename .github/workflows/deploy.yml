@@ -1,0 +1,31 @@
+name: Expo Deploy
+
+on:
+  push:
+    branches:
+      - main  # Déploie uniquement quand on push sur main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🔄 Checkout code
+        uses: actions/checkout@v3
+
+      - name: ⚙️ Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: 🚀 Install Expo CLI
+        run: npm install -g expo-cli
+
+      - name: 🔐 Login to Expo
+        run: expo login --token ${{ secrets.EXPO_TOKEN }}
+
+      - name: 📤 EAS Update
+        run: npx eas update --branch main --non-interactive
