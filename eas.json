@@ -3,12 +3,17 @@
       "version": ">= 3.0.0"
     },
     "build": {
-      "web": {
-        "buildCommand": "expo export:web",
-        "env": {
-          "EXPO_ENV": "production"
-        }
+      "production": {
+        "developmentClient": false,
+        "distribution": "store"
+      },
+      "preview": {
+        "developmentClient": true,
+        "distribution": "internal"
       }
+    },
+    "submit": {
+      "production": {}
     }
   }
   
