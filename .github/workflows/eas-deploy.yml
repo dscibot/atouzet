@@ -23,7 +23,10 @@ jobs:
       - name: Install EAS CLI
         run: npm install -g eas-cli
 
-      - name: Export web app
+      - name: Install Webpack config
+        run: npx expo install @expo/webpack-config@~19.0.1
+
+      - name: Export web build
         run: npx expo export:web
 
       - name: Deploy to EAS Hosting
