@@ -1,4 +1,4 @@
-name: Deploy to EAS Hosting
+name: Deploy Expo Web to EAS Hosting
 
 on:
   push:
@@ -23,7 +23,16 @@ jobs:
       - name: Install EAS CLI
         run: npm install -g eas-cli
 
-      - name: Build and deploy to EAS Hosting
-        run: eas deploy --platform web
+      - name: Build web
+        run: |
+          eas build --platform web --non-interactive
         env:
           EAS_ACCESS_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Upload to EAS Hosting
+        run: |
+          eas deploy --non-interactive
+        env:
+          EAS_ACCESS_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+
