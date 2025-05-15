@@ -1,12 +1,6 @@
 {
     "cli": {
       "version": ">= 3.0.0"
-    },
-    "build": {
-      "web": {
-        "buildCommand": "expo export:web",
-        "dist": "dist"
-      }
     }
   }
   
