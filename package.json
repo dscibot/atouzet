@@ -50,7 +50,8 @@
     "react-native-screens": "^4.9.2",
     "react-native-web": "~0.19.13",
     "react-native-webview": "^13.13.5",
-    "webpack-config": "^7.5.0"
+    "webpack-config": "^7.5.0",
+    "@expo/webpack-config": "~19.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

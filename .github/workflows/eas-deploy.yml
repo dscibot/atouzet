@@ -26,8 +26,8 @@ jobs:
       - name: Install Webpack config
         run: npx expo install @expo/webpack-config@~19.0.1
 
-      - name: Export web build
-        run: npx expo export:web
+      - name: Export Web build
+        run: npx expo export --platform web
 
       - name: Deploy to EAS Hosting
         run: eas deploy --non-interactive
