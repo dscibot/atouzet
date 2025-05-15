@@ -24,7 +24,7 @@ jobs:
         run: npm install -g eas-cli
 
       - name: Install compatible webpack config
-        run: npx expo install @expo/webpack-config@~23.0.0
+        run: npx expo install @expo/webpack-config@~19.0.1
 
       - name: Export for Web
         run: npx expo export --platform web
