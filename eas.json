@@ -3,17 +3,18 @@
       "version": ">= 3.0.0"
     },
     "build": {
-      "production": {
-        "developmentClient": false,
-        "distribution": "store"
-      },
       "preview": {
         "developmentClient": true,
         "distribution": "internal"
+      },
+      "production": {
+        "android": {
+          "workflow": "managed"
+        },
+        "ios": {
+          "workflow": "managed"
+        }
       }
-    },
-    "submit": {
-      "production": {}
     }
   }
   
