@@ -1,4 +1,4 @@
-name: Deploy Web App to EAS Hosting
+name: Deploy to EAS Hosting
 
 on:
   push:
@@ -10,8 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -21,11 +20,12 @@ jobs:
       - name: Install EAS CLI
         run: npm install -g eas-cli
 
-      - name: Install dependencies (ignore peer deps)
+      - name: Install dependencies
         run: npm install --legacy-peer-deps
 
-      - name: EAS login
-        run: eas whoami || eas login --token ${{ secrets.EXPO_TOKEN }}
-
-      - name: Deploy to EAS Hosting (Web)
-        run: eas deploy --platform web --profile preview
+      - name: Deploy Web to EAS Hosting
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          eas whoami
+          eas deploy --platform web --profile preview
