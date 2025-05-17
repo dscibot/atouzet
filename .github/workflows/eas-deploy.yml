@@ -25,8 +25,9 @@ jobs:
       - name: Install EAS CLI
         run: npm install -g eas-cli
 
-      - name: Login to EAS
-        run: eas login --token ${{ secrets.EXPO_TOKEN }}
+      # ❌ Supprimé : Login inutile
+      # - name: Login to EAS
+      #   run: eas login --token ${{ secrets.EXPO_TOKEN }}
 
       - name: Deploy to EAS Hosting
         run: eas deploy
