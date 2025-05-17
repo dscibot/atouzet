@@ -24,6 +24,6 @@ jobs:
         run: npm install -g eas-cli
 
       - name: Deploy to EAS Hosting
-        run: eas deploy --profile preview
+        run: eas deploy
         env:
           EAS_ACCESS_TOKEN: ${{ secrets.EXPO_TOKEN }}
