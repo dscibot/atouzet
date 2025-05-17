@@ -1,4 +1,4 @@
-name: Deploy to EAS Hosting
+name: Deploy Web to EAS Hosting
 
 on:
   push:
@@ -6,10 +6,8 @@ on:
       - main
 
 jobs:
-  deploy:
+  deploy-web:
     runs-on: ubuntu-latest
-    env:
-      EAS_ACCESS_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
     steps:
       - uses: actions/checkout@v3
@@ -20,14 +18,9 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        run: npm install --legacy-peer-deps
+        run: npm ci
 
-      - name: Install EAS CLI
-        run: npm install -g eas-cli
-
-      # ❌ Supprimé : Login inutile
-      # - name: Login to EAS
-      #   run: eas login --token ${{ secrets.EXPO_TOKEN }}
-
-      - name: Deploy to EAS Hosting
-        run: eas deploy
+      - name: Deploy Web
+        run: npx eas deploy --platform web --profile preview
+        env:
+          EAS_ACCESS_TOKEN: ${{ secrets.EXPO_TOKEN }}

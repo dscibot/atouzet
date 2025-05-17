@@ -1,13 +1,15 @@
 {
-    "cli": {
-      "version": ">= 3.0.0"
-    },
-    "build": {
-      "preview": {
-        "developmentClient": false,
-        "distribution": "internal"
-      }
-    },
-    "submit": {}
-  }
-  
+  "cli": {
+    "version": ">= 3.0.0"
+  },
+  "build": {
+    "preview": {
+      "developmentClient": false,
+      "distribution": "internal"
+    }
+  },
+  "deploy": {
+    "preview": {}
+  },
+  "submit": {}
+}
