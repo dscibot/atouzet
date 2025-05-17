@@ -8,8 +8,5 @@
       "distribution": "internal"
     }
   },
-  "deploy": {
-    "preview": {}
-  },
   "submit": {}
 }
