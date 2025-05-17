@@ -3,14 +3,11 @@
       "version": ">= 3.0.0"
     },
     "build": {
-      "production": {
+      "preview": {
         "developmentClient": false,
         "distribution": "internal"
       }
     },
-    "submit": {},
-    "deploy": {
-      "preview": {}
-    }
+    "submit": {}
   }
   

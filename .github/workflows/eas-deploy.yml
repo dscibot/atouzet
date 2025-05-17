@@ -18,18 +18,17 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        run: npm install --legacy-peer-deps
+        run: npm install
 
-      - name: Install EAS CLI globally
+      - name: Install EAS CLI
         run: npm install -g eas-cli
 
-      - name: Install compatible webpack config
-        run: npx expo install @expo/webpack-config@~19.0.
-
-      - name: Export for Web
-        run: npx expo export --platform web
+      - name: Login to EAS
+        run: eas whoami || eas login --token ${{ secrets.EXPO_TOKEN }}
 
       - name: Deploy to EAS Hosting
-        run: eas deploy --non-interactive
+        run: eas deploy --profile preview
         env:
           EAS_ACCESS_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+

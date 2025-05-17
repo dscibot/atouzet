@@ -2,10 +2,7 @@
   "expo": {
     "name": "atouzet",
     "slug": "atouzet",
-    "owner": "dscibot",
-    "platforms": ["web"],
-    "version": "1.0.5",
-    "sdkVersion": "49.0.0",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -21,7 +18,7 @@
       }
     },
     "web": {
-      "bundler": "webpack",
+      "bundler": "metro",
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
