@@ -17,8 +17,8 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install dependencies (ignore peer deps)
+        run: npm install --legacy-peer-deps
 
       - name: Deploy Web
         run: npx eas deploy --platform web --profile preview
