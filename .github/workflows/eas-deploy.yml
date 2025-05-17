@@ -35,4 +35,4 @@ jobs:
       - name: 🚀 Deploy to EAS Hosting
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-        run: eas deploy --platform web
+        run: eas deploy
