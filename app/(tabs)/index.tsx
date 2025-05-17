@@ -250,7 +250,7 @@ const SectionTarifs = ({ tariffsRef }) => {
           <Text style={styles.tarifText}>PACK OPTIMISATION - 7h : 235€</Text>
           <Text style={styles.tarifText}>PACK SÉRÉNITÉ - 10h : 325€</Text>
           <Text style={styles.tarifText}>PACK LIBERTÉ - 20h : 615€</Text>
-          <Text style={styles.tarifText}>PACK SUPER ASSIST - 30h : 850€</Text>
+          <Text style={styles.tarifText}>PACK SUPER ASSIST - 30h : 865</Text>
         </View>
       </View>
       <View style={styles.separator} />
