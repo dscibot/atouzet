@@ -17,9 +17,15 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
+      - name: Install EAS CLI
+        run: npm install -g eas-cli
 
       - name: 📦 Install dependencies
-        run: npm ci
+        run: npm install --legacy-peer-deps
+
+      - name: Install EAS CLI
+        run: npm install -g eas-cli
+
 
       - name: 🔐 Authenticate with EAS
         run: eas whoami || eas login --token ${{ secrets.EXPO_TOKEN }}
