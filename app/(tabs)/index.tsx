@@ -249,7 +249,7 @@ const SectionTarifs = ({ tariffsRef }) => {
           <Text style={styles.tarifText}>PACK ESSENTIEL - 5h : 190€</Text>
           <Text style={styles.tarifText}>PACK OPTIMISATION - 7h : 260€</Text>
           <Text style={styles.tarifText}>PACK SÉRÉNITÉ - 10h : 365€</Text>
-          <Text style={styles.tarifText}>PACK SÉRÉNITÉ - 15h : 525€</Text>
+          <Text style={styles.tarifText}>PACK HARMONIE - 15h : 525€</Text>
           <Text style={styles.tarifText}>PACK LIBERTÉ - 20h : 675€</Text>
           <Text style={styles.tarifText}>PACK SUPER ASSIST - 30h : 955€</Text>
         </View>
